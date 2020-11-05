@@ -21,3 +21,9 @@ class Stock(models.Model):
     product = models.ForeignKey("Product",on_delete=models.CASCADE)
     date = models.DateField()
     quantity = models.IntegerField(default=0)
+
+class Market(models.Model):
+    name = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    date = models.DateTimeField()
+    stock = models.ManyToManyField(Stock)
