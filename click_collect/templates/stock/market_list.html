@@ -3,7 +3,7 @@
 {% block content %}
     <h2>Market List</h2>
 
-    <div style="padding-top: 30px">
+    <div>
     <table class="table">
       <thead>
         <tr>
@@ -21,7 +21,7 @@
           <td>{{object.name}}</td>
           <td>{{object.date}}</td>
           <td>{{object.city}}</td>
-          <td><a href="{% url 'bucket_create' pk=object.pk  %}">Lien</a></td>
+          <td><a class="btn btn-primary btn-sm" href="{% url 'bucket_create' market=object.pk  %}"><i class="fas fa-shopping-cart"></i> Buy</a></td>
         </tr>
         {% endfor %}
       </tbody>

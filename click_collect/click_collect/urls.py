@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from stock.views import MarketListView
-from bucket.views import BucketCreateView
+from bucket.views import BucketCreateView, BucketCreatedView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('market/', MarketListView.as_view(),name="market_list"),
-    path('market/<int:pk>/bucket/create/', BucketCreateView.as_view(),name="bucket_create"),
+    path('market/<int:market>/bucket/create/', BucketCreateView.as_view(),name="bucket_create"),
+    path('bucket/created/',BucketCreatedView.as_view(),name="bucket_created"),
+    
 ]
