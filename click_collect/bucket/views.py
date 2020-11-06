@@ -35,7 +35,7 @@ class BucketItemFormView(FormView):
             if form.cleaned_data["quantity"] > 0:
                 data.append({"product":form.cleaned_data["product"],"quantity":form.cleaned_data["quantity"]})
         self.request.session["cart"] = data    # the data is stored in session
-        return super().form_valid(form)
+        return super().form_valid(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
