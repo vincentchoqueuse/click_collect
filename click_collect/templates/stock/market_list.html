@@ -11,6 +11,7 @@
           <th scope="col">Name</th>
           <th scope="col">Date</th>
           <th scope="col">City</th>
+          <th scope="col">Deadline Cart</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -19,9 +20,10 @@
         <tr>
           <th scope="row">{{object.id}}</th>
           <td>{{object.name}}</td>
-          <td>{{object.date}}</td>
+          <td>{{object.date_market}}</td>
           <td>{{object.city}}</td>
-          <td><a class="btn btn-primary btn-sm" href="{% url 'bucket_create' market=object.pk  %}"><i class="fas fa-shopping-cart"></i> Buy</a></td>
+          <td>{{object.deadline_cart}}</td>
+          <td><a class="btn btn-primary btn-sm" href="{% url 'item_create' market_pk=object.pk  %}"><i class="fas fa-shopping-cart"></i> Buy</a></td>
         </tr>
         {% endfor %}
       </tbody>

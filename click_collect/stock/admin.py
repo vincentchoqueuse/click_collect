@@ -1,21 +1,24 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Product, Stock, Market
+from .models import Product, Item, Market
 
 class ProductAdmin(admin.ModelAdmin):
     model = Product
-    list_display = ['name','image' ]
+    list_display = ['name','image','quantity','price']
 
+class ItemInline(admin.TabularInline):
+    model = Item
+    extra = 3
+    fields = ('product', 'quantity', 'description')
 
-class StockAdmin(admin.ModelAdmin):
-    model = Stock
-    list_display = ['name','quantity','date']
 
 class MarketAdmin(admin.ModelAdmin):
     model = Market
-    list_display = ['name','date','city']
+    list_display = ['name','date_market','deadline_cart','city']
+    inlines = (
+        ItemInline,
+        )
 
 admin.site.register(Product,ProductAdmin)
-admin.site.register(Stock,StockAdmin)
 admin.site.register(Market,MarketAdmin)

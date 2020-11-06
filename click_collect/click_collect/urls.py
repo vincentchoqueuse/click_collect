@@ -14,14 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from stock.views import MarketListView
-from bucket.views import BucketCreateView, BucketCreatedView
+from django.urls import path, include
+from django.conf import settings
+from bucket.views import MarketListView,manage_buckets, BucketCreatedView, BucketCreateView
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('market/', MarketListView.as_view(),name="market_list"),
-    path('market/<int:market>/bucket/create/', BucketCreateView.as_view(),name="bucket_create"),
-    path('bucket/created/',BucketCreatedView.as_view(),name="bucket_created"),
-    
+    path('', MarketListView.as_view(),name="market_list"),
+    path('<int:market_pk>/item/', manage_buckets,name="item_create"),
+    path('<int:market_pk>/item/checkout/',BucketCreateView.as_view(),name="bucket_create"),
+    path('thanks/',BucketCreatedView.as_view(),name="bucket_created"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) 

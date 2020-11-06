@@ -5,28 +5,37 @@ from django.utils.html import mark_safe
 class Product(models.Model):
     name = models.CharField(max_length=200)
     image = models.ImageField(upload_to="images/", null=True, blank=True)
+    quantity = models.IntegerField(default=0)
+    price = models.FloatField(default=0)
 
     def __str__(self):
         return '{}'.format(self.name)
 
-    def image_tag(self):
-        from django.utils.html import escape
-        return mark_safe('<img src="{}" width="150" height="150" />'.format(self.image))
-
-    image_tag.short_description = 'Image'
-    image_tag.allow_tags = True
-
-class Stock(models.Model):
-    name = models.CharField(max_length=200)
-    product = models.ForeignKey("Product",on_delete=models.CASCADE)
-    date = models.DateField()
-    quantity = models.IntegerField(default=0)
+    @property
+    def image_url(self):
+        if self.image:
+            value = self.image.url
+        else:
+            value ="#"
+        return value
 
 class Market(models.Model):
     name = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
-    date = models.DateTimeField()
-    stock = models.ManyToManyField(Stock)
-
+    deadline_cart = models.DateTimeField()
+    date_market = models.DateTimeField()
+    
     def __str__(self):
         return '{}'.format(self.name)
+
+class Item(models.Model):
+    market = models.ForeignKey("Market",on_delete=models.CASCADE)
+    description = models.CharField(max_length=30,null=True, blank=True)
+    product = models.ForeignKey("Product",on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
+
+    def __str__(self):
+        return '{}'.format(self.product)
+
+    def remaining_quantity(self):
+        return 3

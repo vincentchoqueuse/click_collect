@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>New Bucket</h2>
+<h3>Market {{market}}</h3>
+
+<form method="post">
+    {% csrf_token %}
+   
+
+    <table class="table">
+        <tr>
+            <th>Photo</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+        </tr>
+        {{ formset.management_form }}
+        {% for item_object,form in item_object_and_formset %}
+        <tr>
+            <td>{% if item_object.product.image%}<img src="{{item_object.product.image.url}}" class="image_thumb"/>{% endif %}</td>
+            <td>{{item_object}}</td>
+            <td class="price">{{item_object.product.price }}</td>
+            <td>{{form.product }} {{ form.quantity }}</td>
+            <td class="total_price">0</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+    <div class="float-right">
+        <button type="submit" class="btn btn-primary">Checkout</button>
+    </div>
+</form>
+{% endblock %}
+
+{%block js %}
+<script>
+document.addEventListener('input', function (evt) {
+    var element = evt.target;
+    var quantity = parseFloat(element.value);
+    var price = parseFloat(element.closest("tr").getElementsByClassName("price")[0].innerHTML);
+    var total = quantity*price;
+    total = total.toFixed(2)
+    element.closest("tr").getElementsByClassName("total_price")[0].innerHTML = total;
+});
+</script>
+{% endblock %}
