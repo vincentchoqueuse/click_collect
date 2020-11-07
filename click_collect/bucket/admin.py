@@ -5,7 +5,7 @@ from .models import Bucket, BucketItem
 
 class ItemInline(admin.TabularInline):
     model = BucketItem
-    fields = ('product', 'quantity')
+    fields = ('product', 'quantity','price')
     readonly_fields = ('total_price',)
     extra = 0
 

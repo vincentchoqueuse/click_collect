@@ -1,13 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, FormView
+from django.views.generic.edit import FormView
 from .models import Bucket, BucketItem
 from stock.models import Item, Product, Market
-from .forms import BucketItemForm
+from .forms import BucketItemForm, ClientForm
 from django.forms import formset_factory
-from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
+
 
 
 class MarketListView(ListView):
@@ -17,64 +17,67 @@ class MarketListView(ListView):
 class BucketItemFormView(FormView):
     template_name = "bucket/bucket_list.html"
     form_class = formset_factory(BucketItemForm,extra = 0)
-    success_url = "checkout/"
-
-    def get_market(self):
-        return get_object_or_404(Market,pk=self.kwargs.get('market_pk'))
+    success_url = "/checkout/"
 
     def get_initial(self):
         initial = []
-        object_list = Item.objects.filter(market=self.get_market())
+        market_pk = self.kwargs.get('market_pk')
+        object_list = Item.objects.filter(market_id=market_pk)
         for object in object_list:
-            initial.append({'product': object.product.id,'quantity':0})
+            product_id = object.product.id
+            try:
+                quantity = self.request.session["cart"][str(market_pk)]["products"][str(product_id)]["quantity"]
+            except:
+                quantity = 0
+            initial.append({'product': product_id,'quantity':quantity})
         return initial
 
     def form_valid(self, formset):
-        data = []
+        data = {}
+        total_price_cart = 0
         for form in formset:
-            if form.cleaned_data["quantity"] > 0:
-                data.append({"product":form.cleaned_data["product"],"quantity":form.cleaned_data["quantity"]})
-        self.request.session["cart"] = data    # the data is stored in session
-        return super().form_valid(data)
+            quantity = form.cleaned_data["quantity"]
+            if quantity > 0:
+                product = get_object_or_404(Product,pk=form.cleaned_data["product"])
+                total_price = quantity*product.price
+                data[product.id] = {"name":product.name,"quantity":quantity,"price":product.price,"total_price":total_price}
+                total_price_cart += total_price
+
+        # store data in session
+        market = get_object_or_404(Market,pk=self.kwargs.get('market_pk'))
+        cart = {market.id: {"products":data,"total_price":total_price_cart,"market_name":market.name}}
+
+        if self.request.session.get("cart") is None:
+            self.request.session["cart"]={}  
+        self.request.session.update({"cart":cart})
+
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        market = self.get_market()
-        object_list = Item.objects.filter(market=market)
-        context["market"] = market
+        object_list = Item.objects.filter(market_id=self.kwargs.get('market_pk'))
         context["item_object_and_formset"] = zip(object_list,context["form"])
         return context
 
 
-class BucketCreateView(CreateView):
-    model = Bucket
-    fields = ["client_name","email"]
+class BucketCreateView(FormView):
+    template_name = "bucket/bucket_form.html"
+    form_class = ClientForm
     success_url = '/thanks/'
 
-    def get_object_list(self):
-        item_list = self.request.session.get('cart', [])
-        object_list = []
-        for item in item_list:
-            product =  get_object_or_404(Product,pk=item["product"])
-            object_list.append(BucketItem(product=product,quantity=item["quantity"]))
-        return object_list
-
     def form_valid(self, form):
-        # save the bucket in dB
-        bucket_object = form.save(commit=False)
-        bucket_object.market = get_object_or_404(Market,pk=self.kwargs.get('market_pk'))
-        bucket_object.save()
-        # save all the BucketItem in dB
-        object_list = self.get_object_list()
-        for bucket_item in object_list :
-            bucket_item.bucket=bucket_object
-            bucket_item.save()
-        return super().form_valid(form)
+        object_list = self.request.session.get('cart', [])
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["object_list"] = self.get_object_list()
-        return context
+
+        for market_id,market_item in object_list.items() :
+            bucket = Bucket(market_id = market_id,client_name=form.cleaned_data["name"],email=form.cleaned_data["email"])
+            bucket.save()
+            for product_id,product_item in market_item["products"].items():
+                bucket_item = BucketItem(bucket=bucket,product_id=product_id,quantity=product_item["quantity"],price=product_item["price"])
+                bucket_item.save()
+        #remove cart
+        self.request.session.pop("cart")
+        return HttpResponseRedirect(self.get_success_url())
 
 class BucketCreatedView(TemplateView):
     template_name = "bucket/bucket_created.html"

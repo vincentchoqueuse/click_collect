@@ -23,7 +23,7 @@
           <td>{{object.date_market}}</td>
           <td>{{object.city}}</td>
           <td>{{object.deadline_cart}}</td>
-          <td><a class="btn btn-primary btn-sm" href="{% url 'item_create' market_pk=object.pk  %}"><i class="fas fa-shopping-cart"></i> Buy</a></td>
+          <td><a href="{% url 'item_create' market_pk=object.pk  %}">Visit</a></td>
         </tr>
         {% endfor %}
       </tbody>

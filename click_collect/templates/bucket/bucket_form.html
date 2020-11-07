@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load humanize %}
 
 {% block content %}
 <h2>Review Bucket</h2>
@@ -7,31 +8,29 @@
 <form method="post">
 {% csrf_token %}
 
-
     <table class="table">
         <tr>
-            <th>Photo</th>
+            <th>Market</th>
             <th>Product</th>
             <th>Price</th>
             <th>Quantity</th>
-            <th>Total Price</th>
+            <th>Price</th>
         </tr>
-        {% for object in object_list %}
-        <tr>
-            <td>{% if object.product.image%}<img src="{{object.product.image.url}}" class="image_thumb"/>{% endif %}</td>
-            <td>{{object.product}}</td>
-            <td>{{object.product.price}}</td>
-            <td>{{object.quantity}}</td>
-            <td>{{object.total_price}}</td>
-            <td></td>
-        </tr>
+        {% for market_pk,item in request.session.cart.items %}
+            {% for bucket_pk,bucket_item in item.products.items %}
+            <tr>
+                <td>{{item.market_name}}</td>
+                <td>{{bucket_item.name}}</td>
+                <td>{{bucket_item.price}}</td>
+                <td>{{bucket_item.quantity}}</td>
+                <td>{{bucket_item.total_price|floatformat:2|intcomma}}</td>
+            </tr>
+            {% endfor %}
         {% endfor %}
-
     </table>
     
-<h3>Proceed to Checkout</h3>
-{{form|crispy}}
-
+    <h3>Proceed to Checkout</h3>
+    {{form|crispy}}
     <div class="float-right">
     <button type="submit" class="btn btn-primary">Confirm</button>
     </div>
