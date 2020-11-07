@@ -12,30 +12,45 @@
         <tr>
             <th>Photo</th>
             <th>Product</th>
-            <th>Price</th>
+            <th>Unit Price</th>
             <th>Quantity</th>
-            <th>Total Price</th>
+            <th>Price</th>
         </tr>
         {{ form.management_form }}
         {% for item_object,form in item_object_and_formset %}
         <tr>
             <td>{% if item_object.product.image%}<img src="{{item_object.product.image.url}}" class="image_thumb"/>{% endif %}</td>
             <td>{{item_object}}</td>
-            <td class="price">{{item_object.product.price }}</td>
-            <td>{{form.product }} {{ form.quantity }}</td>
+            <td class="price">{{item_object.product.price }} {{form.quantity.help_text }}</td>
+            <td class="quantity">{{form.product }} {{ form.quantity }} </td>
             <td class="total_price">0</td>
         </tr>
         {% endfor %}
-
+        <tr>
+            <th colspan="4" class='text-right'>Total Price</th>
+            <th id="total">0</th>
+        </tr>
     </table>
     <div class="float-right">
-        <button type="submit" class="btn btn-primary">Checkout</button>
+        <a href="{% url 'market_list' %}" class="btn btn-secondary">Markets</a>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-shopping-cart"></i>  Checkout</button>
     </div>
 </form>
 {% endblock %}
 
 {%block js %}
 <script>
+function update_total()
+{
+    elements = document.getElementsByClassName("total_price");
+    total = 0;
+    for (var indice=0;indice<elements.length;indice++)
+    {
+        total += parseFloat(elements[indice].innerHTML);
+    }
+    document.getElementById("total").innerHTML = total;
+}
+
 document.addEventListener('input', function (evt) {
     var element = evt.target;
     var quantity = parseFloat(element.value);
@@ -43,6 +58,15 @@ document.addEventListener('input', function (evt) {
     var total = quantity*price;
     total = total.toFixed(2)
     element.closest("tr").getElementsByClassName("total_price")[0].innerHTML = total;
+    update_total();
 });
+
+(function() {
+    elements = document.getElementsByClassName("quantity");
+    for (var indice=0;indice<elements.length;indice++)
+    {
+        //to do
+    }
+})();
 </script>
 {% endblock %}

@@ -5,7 +5,7 @@ from .models import Product, Item, Market
 
 class ProductAdmin(admin.ModelAdmin):
     model = Product
-    list_display = ['name','image','quantity','price']
+    list_display = ['name','image','quantity','price','unit']
 
 class ItemInline(admin.TabularInline):
     model = Item

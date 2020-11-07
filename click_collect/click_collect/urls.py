@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', MarketListView.as_view(),name="market_list"),
     path('<int:market_pk>/item/', BucketItemFormView.as_view(),name="item_create"),
-    path('<int:market_pk>/item/checkout/',BucketCreateView.as_view(),name="bucket_create"),
+    path('checkout/',BucketCreateView.as_view(),name="bucket_create"),
     path('thanks/',BucketCreatedView.as_view(),name="bucket_created"),
 ]
 

@@ -20,9 +20,10 @@ class BucketItem(models.Model):
     bucket = models.ForeignKey("Bucket",on_delete=models.CASCADE)
     product = models.ForeignKey("stock.Product",on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
+    price = models.FloatField(default=0)
 
     def __str__(self):
         return '{}'.format(self.product)
 
     def total_price(self):
-        return self.product.price*self.quantity
+        return self.price*self.quantity

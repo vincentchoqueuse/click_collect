@@ -1,12 +1,19 @@
 from django.db import models
 from django.utils.html import mark_safe
 
+TYPE_CHOICES = (
+    (1, "Pièce"),
+    (2, "kilo"),
+    (3, "kilo")
+)
+
 # Create your models here.
 class Product(models.Model):
     name = models.CharField(max_length=200)
     image = models.ImageField(upload_to="images/", null=True, blank=True)
     quantity = models.IntegerField(default=0)
     price = models.FloatField(default=0)
+    unit = models.IntegerField(choices=TYPE_CHOICES, default=1) 
 
     def __str__(self):
         return '{}'.format(self.name)
