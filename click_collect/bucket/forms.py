@@ -13,13 +13,13 @@ class BucketItemForm(forms.Form):
         if kwargs.get('initial', None):
             product = get_object_or_404(Product,pk=kwargs['initial']['product'] )
             if product.unit  == 1:
-                self.fields['quantity'].widget = forms.NumberInput(attrs={'class': "form-control form-control-sm",'step': '1'})   
+                self.fields['quantity'].widget = forms.NumberInput(attrs={'class': "form-control form-control-sm quantity",'step': '1'})   
                 self.fields['quantity'].help_text = '/ unit'   
             if product.unit  == 2:
-                self.fields['quantity'].widget = forms.NumberInput(attrs={'class': "form-control form-control-sm",'step': '0.5'})  
+                self.fields['quantity'].widget = forms.NumberInput(attrs={'class': "form-control form-control-sm quantity",'step': '0.5'})  
                 self.fields['quantity'].help_text = '/ kg' 
             if product.unit  == 3:
-                self.fields['quantity'].widget = forms.NumberInput(attrs={'class': "form-control form-control-sm",'step': '0.25'})      
+                self.fields['quantity'].widget = forms.NumberInput(attrs={'class': "form-control form-control-sm quantity",'step': '0.25'})      
                 self.fields['quantity'].help_text = '/ kg' 
         
         #self.fields['my_checkbox'].widget.attrs['onclick'] = 'return false;'

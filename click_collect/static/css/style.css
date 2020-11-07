@@ -14,3 +14,11 @@ h2{
 .image_thumb{
     width: 30px;
 }
+
+.col_price{
+    width: 100px;
+}
+
+.euro_price::after { 
+    content: "\20AC ";
+  }

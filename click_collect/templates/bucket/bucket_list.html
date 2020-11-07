@@ -14,21 +14,21 @@
             <th>Product</th>
             <th>Unit Price</th>
             <th>Quantity</th>
-            <th>Price</th>
+            <th class="col_price">Price</th>
         </tr>
         {{ form.management_form }}
         {% for item_object,form in item_object_and_formset %}
-        <tr>
+        <tr class="product_row">
             <td>{% if item_object.product.image%}<img src="{{item_object.product.image.url}}" class="image_thumb"/>{% endif %}</td>
             <td>{{item_object}}</td>
             <td class="price">{{item_object.product.price }} {{form.quantity.help_text }}</td>
-            <td class="quantity">{{form.product }} {{ form.quantity }} </td>
-            <td class="total_price">0</td>
+            <td >{{form.product }} {{ form.quantity }} </td>
+            <td class="total_price euro_price">0</td>
         </tr>
         {% endfor %}
         <tr>
             <th colspan="4" class='text-right'>Total Price</th>
-            <th id="total">0</th>
+            <th id="total" class="euro_price">0</th>
         </tr>
     </table>
     <div class="float-right">
@@ -48,7 +48,7 @@ function update_total()
     {
         total += parseFloat(elements[indice].innerHTML);
     }
-    document.getElementById("total").innerHTML = total;
+    document.getElementById("total").innerHTML = total.toFixed(2);
 }
 
 document.addEventListener('input', function (evt) {
@@ -62,11 +62,18 @@ document.addEventListener('input', function (evt) {
 });
 
 (function() {
-    elements = document.getElementsByClassName("quantity");
+    var elements = document.getElementsByClassName("product_row");
+    var total = 0;
     for (var indice=0;indice<elements.length;indice++)
     {
-        //to do
+        var element = elements[indice];
+        var price = parseFloat(element.getElementsByClassName("price")[0].innerHTML);
+        var quantity = parseFloat(element.getElementsByClassName("quantity")[0].value);
+        var total_temp = quantity*price;
+        element.getElementsByClassName("total_price")[0].innerHTML = total_temp.toFixed(2);
+        total += total_temp;
     }
+    document.getElementById("total").innerHTML = total.toFixed(2);
 })();
 </script>
 {% endblock %}

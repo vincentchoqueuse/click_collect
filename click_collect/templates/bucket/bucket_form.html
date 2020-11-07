@@ -14,16 +14,16 @@
             <th>Product</th>
             <th>Price</th>
             <th>Quantity</th>
-            <th>Price</th>
+            <th class="col_prices">Price</th>
         </tr>
         {% for market_pk,item in request.session.cart.items %}
             {% for bucket_pk,bucket_item in item.products.items %}
             <tr>
                 <td>{{item.market_name}}</td>
                 <td>{{bucket_item.name}}</td>
-                <td>{{bucket_item.price}}</td>
+                <td class="euro_price">{{bucket_item.price}}</td>
                 <td>{{bucket_item.quantity}}</td>
-                <td>{{bucket_item.total_price|floatformat:2|intcomma}}</td>
+                <th class="euro_price">{{bucket_item.total_price|floatformat:2|intcomma}}</th>
             </tr>
             {% endfor %}
         {% endfor %}
