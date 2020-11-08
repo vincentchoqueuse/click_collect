@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'stock',
     'bucket',
     'crispy_forms',
+    'extra_views',
 ]
 
 MIDDLEWARE = [

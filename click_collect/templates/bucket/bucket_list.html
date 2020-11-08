@@ -7,7 +7,6 @@
 
 <form method="post">
     {% csrf_token %}
-   
     <table class="table">
         <tr>
             <th>Photo</th>
@@ -17,12 +16,12 @@
             <th class="col_price">Price</th>
         </tr>
         {{ form.management_form }}
-        {% for item_object,form in item_object_and_formset %}
+        {% for form_item in form %}
         <tr class="product_row">
-            <td>{% if item_object.product.image%}<img src="{{item_object.product.image.url}}" class="image_thumb"/>{% endif %}</td>
-            <td>{{item_object}}</td>
-            <td class="price">{{item_object.product.price }} {{form.quantity.help_text }}</td>
-            <td >{{form.product }} {{ form.quantity }} </td>
+            <td>{% if form_item.instance.image%}<img src="{{form_item.instance.image.url}}" class="image_thumb"/>{% endif %}</td>
+            <td>{{form_item.instance.name}}</td>
+            <td class="price">{{form_item.instance.price }} / {{form_item.instance.get_unit_display }}</td>
+            <td >{{form_item.product_pk}} {{ form_item.quantity }} </td>
             <td class="total_price euro_price">0</td>
         </tr>
         {% endfor %}
@@ -33,47 +32,19 @@
     </table>
     <div class="float-right">
         <a href="{% url 'market_list' %}" class="btn btn-secondary">Markets</a>
-        <button type="submit" class="btn btn-primary"><i class="fas fa-shopping-cart"></i>  Checkout</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Checkout</button>
     </div>
 </form>
 {% endblock %}
 
 {%block js %}
 <script>
-function update_total()
-{
-    elements = document.getElementsByClassName("total_price");
-    total = 0;
-    for (var indice=0;indice<elements.length;indice++)
-    {
-        total += parseFloat(elements[indice].innerHTML);
-    }
-    document.getElementById("total").innerHTML = total.toFixed(2);
-}
-
 document.addEventListener('input', function (evt) {
-    var element = evt.target;
-    var quantity = parseFloat(element.value);
-    var price = parseFloat(element.closest("tr").getElementsByClassName("price")[0].innerHTML);
-    var total = quantity*price;
-    total = total.toFixed(2)
-    element.closest("tr").getElementsByClassName("total_price")[0].innerHTML = total;
-    update_total();
+    update_price_total();
 });
 
 (function() {
-    var elements = document.getElementsByClassName("product_row");
-    var total = 0;
-    for (var indice=0;indice<elements.length;indice++)
-    {
-        var element = elements[indice];
-        var price = parseFloat(element.getElementsByClassName("price")[0].innerHTML);
-        var quantity = parseFloat(element.getElementsByClassName("quantity")[0].value);
-        var total_temp = quantity*price;
-        element.getElementsByClassName("total_price")[0].innerHTML = total_temp.toFixed(2);
-        total += total_temp;
-    }
-    document.getElementById("total").innerHTML = total.toFixed(2);
+    update_price_total();
 })();
 </script>
 {% endblock %}

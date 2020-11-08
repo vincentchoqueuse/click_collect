@@ -17,18 +17,21 @@
             <th class="col_prices">Price</th>
         </tr>
         {% for market_pk,item in request.session.cart.items %}
-            {% for bucket_pk,bucket_item in item.products.items %}
-            <tr>
-                <td>{{item.market_name}}</td>
+            {% for bucket_item in item %}
+            <tr class="product_row">
+                <td>{{bucket_item.market_name}}</td>
                 <td>{{bucket_item.name}}</td>
-                <td class="euro_price">{{bucket_item.price}}</td>
-                <td>{{bucket_item.quantity}}</td>
-                <th class="euro_price">{{bucket_item.total_price|floatformat:2|intcomma}}</th>
+                <td class="price euro_price">{{bucket_item.price}}</td>
+                <td >{{bucket_item.quantity}}</td>
+                <th class="total_price euro_price">{{bucket_item.total_price|floatformat:2}}</th>
             </tr>
             {% endfor %}
         {% endfor %}
+        <tr>
+            <th colspan="4" class='text-right'>Total Price</th>
+            <th id="total" class="euro_price">{{total_price|floatformat:2}}</th>
+        </tr>
     </table>
-    
     <h3>Proceed to Checkout</h3>
     {{form|crispy}}
     <div class="float-right">
