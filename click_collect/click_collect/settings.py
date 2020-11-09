@@ -139,6 +139,7 @@ AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
 AWS_S3_REGION_NAME = 'eu-west-3' #change to your region
+AWS_S3_ADDRESSING_STYLE = "virtual"
 
 # Activate Django-Heroku.
 django_heroku.settings(locals(),staticfiles=False)
