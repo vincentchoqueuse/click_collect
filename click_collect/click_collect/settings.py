@@ -12,11 +12,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -26,7 +25,7 @@ SECRET_KEY = 'mn_c1#0e7hc(39bpsqrrvy)#v_6m=)nt3p8pxsj&01d^3o56!$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+PROD = False
 ALLOWED_HOSTS = []
 
 
@@ -43,7 +42,6 @@ INSTALLED_APPS = [
     'stock',
     'bucket',
     'crispy_forms',
-    'storages'
 ]
 
 MIDDLEWARE = [
@@ -54,7 +52,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'click_collect.urls'
@@ -133,13 +130,23 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-AWS_S3_REGION_NAME = 'eu-west-3' #change to your region
-AWS_S3_ADDRESSING_STYLE = "virtual"
 
-# Activate Django-Heroku.
-django_heroku.settings(locals(),staticfiles=False)
+if PROD:
+    
+    import django_heroku
+    INSTALLED_APPS += ['storages']
+    MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware']
+    
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
+    AWS_S3_REGION_NAME = 'eu-west-3' #change to your region
+    AWS_S3_ADDRESSING_STYLE = "virtual"
+
+    # Activate Django-Heroku.
+    django_heroku.settings(locals(),staticfiles=False)
+
+
+
