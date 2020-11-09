@@ -3,8 +3,8 @@ from django.utils.html import mark_safe
 
 TYPE_CHOICES = (
     (1, "Pièce"),
-    (2, "kilo"),
-    (3, "kilo")
+    (2, "kilo (step=0.5)"),
+    (3, "kilo (step=0.25)")
 )
 
 # Create your models here.

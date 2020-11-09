@@ -10,16 +10,18 @@ from .cart import Cart
 
 class MarketListView(ListView):
     model = Market
+    template_name = "bucket/market_list.html"
 
 class BucketItemFormView(FormView):
-    template_name = "bucket/bucket_list.html"
+    template_name = "bucket/bucketitem_form.html"
     form_class = formset_factory(BucketItemForm,extra=0)
     success_url = "/checkout/"
 
     def get_initial(self):
         market_pk = self.kwargs.get('market_pk')
         cart = Cart(self.request.session)
-        initial = cart.get_market(market_pk)
+        market_cart = cart.get_market(market_pk)
+        initial = market_cart["products"]
         return initial
 
     def form_valid(self, formset):

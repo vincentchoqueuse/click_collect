@@ -12,22 +12,26 @@ class Cart():
 
     def set_market(self,market_pk,formset):
         data = []
+        total_price = 0
         market = Market.objects.get(pk=market_pk)
         for form in formset:
             product_pk = form.cleaned_data["product_pk"]
             quantity = form.cleaned_data["quantity"]
             product = Product.objects.get(pk=product_pk)
-            total_price = float(quantity)*product.price
-            data.append({"product_pk":product_pk,"name":product.name,"quantity":quantity,"unit":product.unit,"price":product.price,"total_price":total_price,"market_name":market.name})
+            total_product_price = float(quantity)*product.price
+            total_price += total_product_price
+            data.append({"product_pk":product_pk,"name":product.name,"quantity":quantity,"unit":product.unit,"price":product.price,"total_price":total_product_price})
 
-        self.cart[str(market_pk)] = data
+        self.cart[str(market_pk)] = {"name": market.name,"products":data,"total_price": total_price}
         self.session.update({"cart":self.cart})
 
     def get_market(self,market_pk):
         if self.cart.get(str(market_pk)) is None:
-            data = []
-            for item in Item.objects.filter(market_id=market_pk):
-                data.append({'product_pk':item.product.pk,'quantity':0})
+            market = Market.objects.get(pk=market_pk)
+            products = []
+            for item in Item.objects.filter(market=market):
+                products.append({'product_pk':item.product.pk,'quantity':0})
+            data = {"name": market.name,"products":products,"total_price": 0}
         else:
             data = self.cart[str(market_pk)]
         return data
@@ -35,8 +39,7 @@ class Cart():
     def total_price(self):
         price = 0
         for market_id,market_data in self.cart.items() :
-            for item in market_data:
-                price +=  float(item["total_price"])
+            price +=  float(market_data["total_price"])
         return price
 
     def save(self,form):
