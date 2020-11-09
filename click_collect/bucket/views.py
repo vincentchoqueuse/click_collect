@@ -31,7 +31,7 @@ class BucketItemFormView(FormView):
         return HttpResponseRedirect(self.get_success_url())
 
 class BucketCreateView(FormView):
-    template_name = "bucket/bucket_form.html"
+    template_name = "bucket/thanks.html"
     form_class = ClientForm
     success_url = '/thanks/'
 
