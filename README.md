@@ -24,7 +24,7 @@ The cart is stored in the session backend and save in database only after custom
 
 Here is the view of the main webpage (for the moment) :
 
-![Website](./pictures/website.png)
+![Website](/pictures/website.PNG)
 
 &nbsp;
 
