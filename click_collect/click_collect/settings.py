@@ -138,7 +138,8 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-
+AWS_S3_REGION_NAME = 'eu-west-3' #change to your region
+AWS_S3_SIGNATURE_VERSION = 's3v4'
 
 # Activate Django-Heroku.
 django_heroku.settings(locals(),staticfiles=False)
