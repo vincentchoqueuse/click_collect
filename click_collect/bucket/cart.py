@@ -46,7 +46,7 @@ class Cart():
         for market_id,market_data in self.cart.items() :
             bucket = Bucket(market_id = market_id,client_name=form.cleaned_data["name"],email=form.cleaned_data["email"])
             bucket.save()
-            for item in market_data:
+            for item in market_data["product"]:
                 bucket_item = BucketItem(bucket=bucket,product_id=item["product_pk"],quantity=item["quantity"],price=item["price"])
                 bucket_item.save()
         self.cart = {}
