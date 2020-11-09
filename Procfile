@@ -1,1 +1,1 @@
-web: gunicorn myproject.wsgi
+web: gunicorn click_collect.wsgi
